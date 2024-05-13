@@ -1,0 +1,84 @@
+1. Products Table
+
+CREATE TABLE products (
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(255) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL
+);
+
+
+2. Inventory Table
+
+CREATE TABLE inventory (
+    inventory_id INT PRIMARY KEY,
+    product_id INT,
+    quantity INT,
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+
+3. Orders Table
+
+CREATE TABLE orders (
+    order_id INT PRIMARY KEY,
+    order_date DATE,
+    product_id INT,
+    quantity INT,
+    total_amount DECIMAL(10, 2),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+
+### Sample SQL Queries
+
+1. Inserting Products
+
+INSERT INTO products (product_id, product_name, price) 
+VALUES (1, 'Laptop', 1200.00);
+
+INSERT INTO products (product_id, product_name, price) 
+VALUES (2, 'Printer', 300.00);
+
+
+2. Adding Inventory
+INSERT INTO inventory (inventory_id, product_id, quantity) 
+VALUES (1, 1, 10);  -- 10 laptops in stock
+
+INSERT INTO inventory (inventory_id, product_id, quantity) 
+VALUES (2, 2, 20);  -- 20 printers in stock
+
+
+3. Placing an Order
+ Inserting a new order
+INSERT INTO orders (order_id, order_date, product_id, quantity, total_amount)
+VALUES (1, '2024-05-13', 1, 2, 2400.00);  -- Ordered 2 laptops
+
+ Updating inventory after order placement
+UPDATE inventory
+SET quantity = quantity - 2
+WHERE product_id = 1;
+
+
+4. Viewing Current Inventory
+
+SELECT p.product_name, i.quantity
+FROM products p
+JOIN inventory i ON p.product_id = i.product_id;
+
+
+5. Viewing Recent Orders
+
+SELECT o.order_id, o.order_date, p.product_name, o.quantity, o.total_amount
+FROM orders o
+JOIN products p ON o.product_id = p.product_id
+ORDER BY o.order_date DESC;
+
+
+6. Checking Low Inventory
+
+SELECT p.product_name, i.quantity
+FROM products p
+JOIN inventory i ON p.product_id = i.product_id
+WHERE i.quantity < 5;  -- Products with less than 5 units in stock
+
+
